@@ -7,6 +7,13 @@ allowed-tools: Read, Write, Bash, Glob, Grep
 
 # Doc Harness — Document-Based Project Control
 
+## Codex compatibility
+
+- In Codex, prefer natural-language prompts instead of Claude-only slash commands.
+- Install this skill under `~/.codex/skills/doc-harness`.
+- To keep upstream sync maintainable, this compatibility branch keeps upstream project document names unchanged.
+- See [codex_notes.md](codex_notes.md) for Codex-specific notes.
+
 Doc Harness is a documentation system that enables any AI agent or human collaborator to understand and resume project work purely from reading files — no external memory needed.
 
 It creates and maintains **five documents** per project:

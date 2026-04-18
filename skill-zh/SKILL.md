@@ -7,6 +7,13 @@ allowed-tools: Read, Write, Bash, Glob, Grep
 
 # Doc Harness — 基于文档的项目控制系统
 
+## Codex compatibility
+
+- 在 Codex 中，优先使用自然语言，而不是依赖 Claude Code 的 `/doc-harness` 斜杠命令。
+- 安装路径改为 `~/.codex/skills/doc-harness`。
+- 为了后续更容易同步上游更新，这个适配分支保留 `CLAUDE.md` 等上游既有文件名不变。
+- 额外说明见 [codex_notes.md](codex_notes.md)。
+
 Doc Harness 是一套文档管理系统，使任何 AI Agent 或人类协作者能够仅通过阅读文件来理解和恢复项目工作状态——无需任何外部记忆系统。
 
 每个项目创建并维护**五个文档**：
