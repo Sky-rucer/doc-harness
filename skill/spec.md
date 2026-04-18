@@ -1,7 +1,7 @@
 # Doc Harness — Complete Specification
 
-**Version**: v1.1
-**Date**: 2026-04-03
+**Version**: v1.2
+**Date**: 2026-04-19
 **Status**: Production-ready
 
 ---
@@ -74,10 +74,31 @@ CLAUDE.md consists of three parts: project-specific information + embedded opera
 
 ## Recovery Chain
 
-1. Read this file → project scope, iron rules, operational rules
-2. Read `CURRENT_STATUS.md` → current work details, recent history, next steps
-3. As needed: `FILE_INDEX.md` → find specific files
-4. As needed: `WORKLOG.md` → find historical phase details
+Recovery Chain is the entry ritual for any agent or human resuming work on this project.
+It has two layers.
+
+### Must-read (baseline)
+
+Files any continuation must read. Keep to 2–3 entries.
+
+1. This file (CLAUDE.md)
+2. `CURRENT_STATUS.md`
+
+### Task-conditional
+
+Read only if the work matches. Grows and shrinks as the project evolves.
+
+- If looking up a specific file: read `FILE_INDEX.md`
+- If investigating historical phase details: read `WORKLOG.md`
+- [Add project-specific entries as needed — e.g., "If doing X: read Y.md"]
+
+### Meta-rules
+
+- Recovery Chain is **self-contained**: every entry points to a file inside the project
+  (or a stable sibling-project path). Do not depend on agent-side features
+  (memory systems, chat history, external services) — those may not exist for the next agent.
+- Recovery Chain is **living**: add entries when new classes of work appear; remove entries
+  when work categories retire. Review at phase transitions.
 
 ## Project Overview
 
@@ -322,6 +343,27 @@ Each phase is a top-level section (`##`):
 - **Forbidden**: Modify or delete content copied from CURRENT_STATUS
 - Factual errors: annotate as `[Erratum (YYYY-MM-DD): actual value was 4087, not 4090]`
 
+### 5.5 Archival
+
+WORKLOG is append-only, so it inevitably grows. A 2000-line WORKLOG is a liability — any agent asked to "check the history" fetches the whole thing and burns context. Archive to keep WORKLOG.md itself readable while preserving full history on disk.
+
+**Trigger** (soft threshold): WORKLOG.md exceeds **~1000 lines**. Measure by line count, not phase count — phase density varies ten-fold across projects, so lines are the reliable unit.
+
+**Archival procedure**:
+
+1. Decide the cut point: keep the most recent **3 phases** in `WORKLOG.md`; move earlier phases out.
+2. Create `WORKLOG_ARCHIVE_<YYYY-QN>.md` (quarterly granularity, e.g. `WORKLOG_ARCHIVE_2026-Q1.md`). Use the date range of the archived phases to choose the quarter label. Multiple archive files accumulate over time.
+3. Move the older phase sections (including their entries in the TOC) to the archive file. The archive file has the same structure as WORKLOG.md (TOC at top + phase sections below).
+4. At the top of `WORKLOG.md`, add a pointer line immediately under the title:
+   ```
+   > Earlier history archived in: WORKLOG_ARCHIVE_2026-Q1.md, WORKLOG_ARCHIVE_2026-Q2.md, ...
+   ```
+5. Register each archive file in FILE_INDEX under a `## Archived History` category (create if missing).
+
+**Non-goals**: Archival is not deletion. Archive files are permanent records, never edited after creation except for errata. Never delete an archive file.
+
+**When to skip**: Projects with compact phases (e.g. ~20 lines each) may never trigger. That's fine; the threshold catches only projects that need it.
+
 ---
 
 ## Chapter 6: Information Flow Rules
@@ -524,12 +566,16 @@ For directories with more than 20 files, create a sub-FILE_INDEX.md. For initial
 
 ## Chapter 11: Agent Behavior Guidelines
 
-### 11.1 Session Start
+### 11.1 Session Start — Applying Recovery Chain
 
-1. Read CLAUDE.md → understand project, iron rules, operational rules
-2. Read CURRENT_STATUS.md → understand current state
-3. If user is present → confirm whether next steps have changed
-4. If compact recovery (user not present) → continue per headlights
+Follow the project's Recovery Chain (defined in CLAUDE.md §Recovery Chain):
+
+1. Read the **must-read** layer in order (CLAUDE.md → CURRENT_STATUS.md, typically 2–3 files).
+2. Scan the **task-conditional** layer. Read only the entries whose condition matches the current work.
+3. If user is present → confirm whether next steps have changed.
+4. If compact recovery (user not present) → continue per headlights.
+
+Do not unconditionally read all task-conditional entries at startup. That defeats the purpose of the two-layer split. If you find yourself reading a file every session, it probably belongs in must-read — promote it explicitly.
 
 ### 11.2 During Work
 
@@ -545,6 +591,7 @@ For directories with more than 20 files, create a sub-FILE_INDEX.md. For initial
 4. Update CLAUDE.md "one-line status (as of date)"
 5. Check: are all files created this session registered in FILE_INDEX?
 6. Check: is there any important information only in context? → Write it down!
+7. If a phase transition occurred: check WORKLOG length — over ~1000 lines? → trigger archival per §5.5.
 
 ### 11.4 Phase Transition
 
@@ -559,11 +606,71 @@ Execute the five-step protocol defined in Chapter 6 §6.2.
 | Same number hardcoded in multiple documents | Maintain only in CURRENT_STATUS; others reference it |
 | Superseded document not marked | Add SUPERSEDED notice at first line |
 | Multiple recovery chains | Recovery chain defined only in CLAUDE.md |
+| Recovery Chain references agent-side features (memory / chat history / external services) | Recovery Chain must be self-contained — only project-internal files |
+| Recovery Chain must-read layer grows past 3 entries | Demote extras to task-conditional; must-read stays lean |
 | File created but not registered | Register in FILE_INDEX immediately on creation |
 | CURRENT_STATUS grows indefinitely | Transfer details to WORKLOG at phase transitions |
+| WORKLOG grows past ~1000 lines untouched | Archive per §5.5 |
 | Information exists only in context | "Write It Down" — save to file and register |
 | Phase principles become permanent legacy | Review at phase transition: promote to iron rule or remove |
 | WORKLOG has no table of contents | Maintain TOC table at top |
+
+---
+
+## Chapter 13: Optional Long-Horizon Documents
+
+The four core documents (CLAUDE / CURRENT_STATUS / FILE_INDEX / WORKLOG) are tuned for short-to-medium-horizon work flow: what's the current phase, what got done, where are the files, what's the history. Two categories of information don't fit well in any of them. Doc Harness offers two **optional** documents for these, used only when a project genuinely accumulates such content.
+
+These documents are opt-in. A project that doesn't need them should not create them.
+
+### 13.1 PARKING_LOT.md — Deferred Items
+
+**Purpose**: Concrete things you'd like to do but can't right now. Without a parking lot, such items either clutter CURRENT_STATUS headlights (wrong — they're not next) or get overwritten by new work and forgotten.
+
+**When to create**: When a specific item is being removed from active consideration but shouldn't be lost. Typical trigger: during phase transition, some driving manual principle or next-step item is no longer for *now* but will be relevant again under known conditions.
+
+**Entry format**: Each entry records **what** to do, **why it's deferred**, **preconditions for revival**, and **when to re-check**.
+
+```markdown
+## Entries
+
+### [Item title] — deferred YYYY-MM-DD
+- **What**: [concrete action or goal]
+- **Why deferred**: [reason — e.g., "depends on X which won't ship until Q3"]
+- **Preconditions for revival**: [what must be true before this can resume]
+- **Re-check**: [date or event — e.g., "check at next phase transition" or "2026-09-01"]
+```
+
+**Lifecycle**: When preconditions become true, either (a) move the item to CURRENT_STATUS headlights, striking from PARKING_LOT; or (b) keep the entry and annotate with a decision — e.g., "[Revived 2026-09-15 → now active]" or "[No longer relevant 2026-09-15 because X]". Never silently delete.
+
+**Recovery Chain integration**: Add to the task-conditional layer, e.g. `- If planning a new phase: read PARKING_LOT.md (any deferred items revivable?)`.
+
+### 13.2 PHILOSOPHY.md — Principles From Practice
+
+**Purpose**: Record principles, lessons, and generalizable insights that emerge from the project's specific practice. These are broader than iron rules (which govern *this* project's operations) and more durable than the driving manual (which governs *this phase*).
+
+**Design rationale**: General wisdom is born from specific practice. The project is the forge; the principle is what comes out. Forbidding projects from recording their own philosophy severs the principle from its origin. PHILOSOPHY.md is that capture layer.
+
+**When to create**: When working on the project surfaces an insight you suspect generalizes beyond the immediate situation — a reusable lesson, a design trade-off worth remembering, a mistake pattern you don't want to repeat.
+
+**Entry format**: Each entry states the principle, the practice that forged it, and the first-recorded date.
+
+```markdown
+## Principles
+
+### [Short principle name] — first recorded YYYY-MM-DD
+**Principle**: [one-sentence statement of the principle]
+
+**Forged by**: [the specific practice / incident / observation that produced this — be concrete about *what happened* that led to this lesson]
+
+**Scope**: [where this applies — this project only? likely broader? already confirmed broader?]
+```
+
+**Promotion pipeline (optional)**: When a principle turns out to apply beyond this project, it may be promoted to portfolio-level (a workspace's own `PRINCIPLES.md` or parent CLAUDE.md section, if the portfolio maintains one). Promotion **does not remove** the entry from PHILOSOPHY.md — this file remains the birthplace record. Annotate promoted entries with `[Promoted to <destination> YYYY-MM-DD]`.
+
+**Lifecycle**: Principles may be refined with errata (`[Refined YYYY-MM-DD: ...]`) or marked superseded (`[Superseded YYYY-MM-DD by: new formulation]`), but entries are not deleted. A PHILOSOPHY.md is read rarely but should survive intact.
+
+**Recovery Chain integration**: Add to task-conditional layer for reflective decisions, e.g. `- If making a major architectural decision: read PHILOSOPHY.md`.
 
 ---
 
@@ -590,6 +697,7 @@ Run through at session end:
 - [ ] All work steps recorded in car body?
 - [ ] Headlights "next steps" accurate?
 - [ ] Any important information only in context? (Write it down!)
+- [ ] If a phase transition happened: WORKLOG under ~1000 lines? (If over, trigger §5.5 archival.)
 
 ---
 
@@ -844,6 +952,30 @@ Agent opens CLAUDE.md:
 
 ---
 
+## Appendix E: Design Choices (FAQ)
+
+### Why doesn't Doc Harness include inbox/outbox folders or cross-project communication rules?
+
+Because that is a **separate concern** from document-based project control. Doc Harness is a general-purpose skill: any single project benefits from the four-document system whether or not it coordinates with other projects.
+
+Inter-project communication — message protocols, inbox/outbox directories, YAML message schemas — belongs to a different skill or spec maintained alongside Doc Harness, not within it. A project using Doc Harness may independently adopt such a protocol; its Recovery Chain task-conditional layer can then reference `inbox/` as a project-local condition (e.g. `- If inbox/ has unread messages: read them`). But Doc Harness itself stays agnostic: no inbox/outbox in templates, no init behavior creating them, no session-end checks for them.
+
+Mixing the two concerns would bind Doc Harness to a particular workspace's coordination protocol. We prefer to keep the skill narrow.
+
+### Why are PARKING_LOT.md and PHILOSOPHY.md optional, not mandatory?
+
+Not every project has deferred items or emergent cross-project principles worth recording. Mandating these files would produce empty shells that erode trust in the four-document system. Offer them as patterns; let each project adopt when there's content to put there.
+
+### Why keep must-read layer at 2–3 files?
+
+Any larger, and "must-read" becomes "should probably read," and agents start skipping entries or reading the whole project defensively. The two-layer split only works if the baseline is genuinely minimal. Entries that only apply to *some* work belong in task-conditional.
+
+### Why use line count (not phase count) as WORKLOG archival trigger?
+
+Phase density varies enormously across projects — from ~20 lines per phase (infrastructure work, terse records) to ~200 lines per phase (dense research work). Line count reflects the actual cost of reading the file, which is what we care about.
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
@@ -851,3 +983,5 @@ Agent opens CLAUDE.md:
 | v0.1 | 2026-04-01 | Initial draft |
 | v0.2 | 2026-04-02 | Incorporated feedback from three independent reviews |
 | v1.0 | 2026-04-02 | Production release. CLAUDE.md template embeds operational rules; 8 ambiguities resolved (session-end status refresh, new project initial state, WORKLOG TOC format, cross-phase context, driving manual lifecycle, FILE_INDEX cross-category, iron rule management §8.3, session-end checklist additions) |
+| v1.1 | 2026-04-03 | Mid-project adoption guidance (§10.3); SUPERSEDED-but-retained document lifecycle (§9.2); improved `/doc-harness check` (spec presence, FILE_INDEX script, phase coherence); sub-index guidelines for large directories |
+| v1.2 | 2026-04-19 | Recovery Chain two-layer structure (must-read + task-conditional) with self-contained constraint; WORKLOG archival rule (§5.5, ~1000-line threshold, quarterly archive files); new optional documents PARKING_LOT.md and PHILOSOPHY.md (Chapter 13); anti-pattern additions; Appendix E Design Choices including rationale for NOT including inbox/outbox |

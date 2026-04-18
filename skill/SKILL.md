@@ -16,6 +16,10 @@ It creates and maintains **five documents** per project:
 - **WORKLOG.md** — Permanent work history (append-only)
 - **DOC_HARNESS_SPEC.md** — Complete specification (reference document)
 
+Two **optional** documents may be added when a project accumulates such content (see spec.md Chapter 13):
+- **PARKING_LOT.md** — Deferred items with preconditions for revival
+- **PHILOSOPHY.md** — Principles forged by this project's practice
+
 ## Commands
 
 ### `/doc-harness init [project-name] [description]`

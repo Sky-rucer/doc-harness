@@ -179,10 +179,19 @@ Here's what the generated CLAUDE.md looks like for a real project:
 **One-line status (as of 2026-04-02)**: Core scraper working, building transformation layer
 
 ## Recovery Chain
-1. Read this file → project scope, rules
-2. Read CURRENT_STATUS.md → current work details
-3. As needed: FILE_INDEX.md → find files
-4. As needed: WORKLOG.md → historical details
+
+### Must-read (baseline)
+1. This file (CLAUDE.md)
+2. CURRENT_STATUS.md
+
+### Task-conditional
+- If looking up a specific file: read FILE_INDEX.md
+- If investigating phase history: read WORKLOG.md
+- [Project-specific entries added as work categories emerge]
+
+### Meta-rules
+- Self-contained: only project-internal files. No dependency on agent-side features.
+- Living: review at phase transitions.
 
 ## Project Overview
 Building a market data analysis tool for internal use. Scrapes order book data,
@@ -322,6 +331,12 @@ Yes. Add sections, define your own categories, adjust principles. Core requireme
 
 **Q: Sub-projects?**
 Each gets its own Doc Harness. Parent's FILE_INDEX links to sub-project entries.
+
+**Q: What's new in v1.2?**
+- **Recovery Chain is now two-layer**: a minimal must-read baseline (2–3 files) plus a task-conditional list for work-specific lookups. Self-contained — no dependency on agent-side memory or external services.
+- **WORKLOG archival**: when `WORKLOG.md` passes ~1000 lines, older phases move to `WORKLOG_ARCHIVE_<YYYY-QN>.md` (quarterly). Keeps the active WORKLOG readable without losing history.
+- **Two optional documents** for long-horizon content: `PARKING_LOT.md` (deferred items with revival preconditions) and `PHILOSOPHY.md` (principles forged by project practice). Both opt-in — create only when there's content to put there.
+- Doc Harness deliberately does **not** include inbox/outbox or cross-project communication — those belong to a separate concern. See spec Appendix E for the reasoning.
 
 ## License
 

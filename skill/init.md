@@ -40,10 +40,26 @@ Check if CLAUDE.md or other Doc Harness files exist. If yes, warn user before ov
 
 ## Recovery Chain
 
-1. Read this file → project scope, iron rules, operational rules
-2. Read `CURRENT_STATUS.md` → current work, recent history, next steps
-3. As needed: `FILE_INDEX.md` → find files
-4. As needed: `WORKLOG.md` → find historical details
+Recovery Chain is the entry ritual for any agent or human resuming work on this project.
+It has two layers.
+
+### Must-read (baseline)
+
+1. This file (CLAUDE.md)
+2. `CURRENT_STATUS.md`
+
+### Task-conditional
+
+- If looking up a specific file: read `FILE_INDEX.md`
+- If investigating historical phase details: read `WORKLOG.md`
+- [Add project-specific entries as work categories emerge]
+
+### Meta-rules
+
+- Recovery Chain is **self-contained**: every entry points to a file inside the project
+  (or a stable sibling-project path). No dependency on agent-side features (memory,
+  chat history, external services).
+- Recovery Chain is **living**: review and update at phase transitions.
 
 ## Project Overview
 

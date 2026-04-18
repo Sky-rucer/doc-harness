@@ -63,7 +63,14 @@ Read WORKLOG.md. Compare TOC table rows with actual `##` headings (use Grep, not
 - Match → `✅ Consistent`
 - Mismatch → `⚠️ TOC has [N] entries, [M] sections found`
 
-### 1.6 Car body length
+### 1.6 WORKLOG length
+
+Count total lines of WORKLOG.md (use `wc -l` or equivalent; do not read the full file).
+- <1000 lines → `✅ [N] lines`
+- 1000–1500 → `⚠️ [N] lines — consider archival (§5.5)`
+- >1500 → `❌ [N] lines — archival overdue`
+
+### 1.7 Car body length
 
 Count lines in CURRENT_STATUS between "## Current Work" and the next "##" heading (use Grep/line counting, not full read).
 - <200 → `✅ [N] lines`
@@ -117,6 +124,19 @@ List all `####` step titles from the CURRENT_STATUS car body section. Ask yourse
    → If goals have shifted, consider executing a phase transition.
 ```
 
+### 2.5 Recovery Chain health
+
+Read the Recovery Chain section from CLAUDE.md.
+
+```
+🗺️ Recovery Chain:
+   → Is it two-layer (must-read + task-conditional)?
+   → Must-read ≤ 3 entries?
+   → All entries point to project-internal files (no agent-side features like memory / chat history)?
+   → Any task-conditional entry consistently read every session? → promote to must-read.
+   → Any must-read entry rarely actually needed? → demote to task-conditional.
+```
+
 ### 2.5 Session-end checklist (if applicable)
 
 ```
@@ -146,7 +166,8 @@ List all `####` step titles from the CURRENT_STATUS car body section. Ask yourse
 [1.3] CLAUDE.md:       ✅/⚠️
 [1.4] FILE_INDEX:      ✅/❌ N unregistered/N ghosts
 [1.5] WORKLOG TOC:     ✅/⚠️
-[1.6] Car body:        ✅ N lines / ⚠️/❌
+[1.6] WORKLOG length:  ✅ N lines / ⚠️/❌
+[1.7] Car body:        ✅ N lines / ⚠️/❌
 
 ── Part 2: Principle Reflection ──
 
@@ -154,6 +175,7 @@ List all `####` step titles from the CURRENT_STATUS car body section. Ask yourse
 📋 Driving Manual: [list with reflections]
 📝 Write It Down: [status]
 🔄 Phase coherence: [step titles + assessment]
+🗺️ Recovery Chain: [two-layer? self-contained? promotions/demotions?]
 
 ── Actions Needed ──
 [specific fixes for ❌/⚠️ items]

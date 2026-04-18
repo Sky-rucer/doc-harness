@@ -56,6 +56,18 @@ Arranged in this order, each separated by `##`:
 - New project WORKLOG: only empty TOC table; content arrives at first phase transition
 - Written content is **never modified or deleted**. Factual errors: annotate `[Erratum (date): correction]`
 
+### Archival (when WORKLOG grows long)
+
+**Trigger**: WORKLOG.md exceeds ~1000 lines (line count, not phase count — density varies across projects).
+
+**Procedure**:
+1. Keep the most recent 3 phases in `WORKLOG.md`.
+2. Move earlier phases (and their TOC entries) to `WORKLOG_ARCHIVE_<YYYY-QN>.md` (quarterly, e.g. `WORKLOG_ARCHIVE_2026-Q1.md`). Archive file has the same structure (TOC + phase sections).
+3. Add a pointer at the top of `WORKLOG.md`: `> Earlier history archived in: WORKLOG_ARCHIVE_2026-Q1.md, ...`
+4. Register each archive file in FILE_INDEX under a `## Archived History` category.
+
+Archive files are permanent records; never delete.
+
 ## Phase Transition — Five Steps
 
 **When to transition**: Work goal fundamentally changes; user explicitly declares; pause >3 days; car body >200 lines. Sub-task switches within same goal (e.g., Ch4→Ch5 both under "literature reinforcement") → do NOT transition; use sub-headings in car body. When in doubt → don't transition.
@@ -68,11 +80,27 @@ Arranged in this order, each separated by `##`:
 4. Clear car body → fill in new phase goal. May include one brief context line (e.g., "Building on Phase N results"). Update driving manual (review each old principle).
 5. Update CLAUDE.md "current phase" and "one-line status (as of date)". Update WORKLOG TOC.
 
-## Session Start
+## Recovery Chain (Session Start)
 
-1. Read CLAUDE.md → understand project, iron rules, operational rules
-2. Read CURRENT_STATUS.md → tire tracks (recent context), car body (current progress), headlights (next steps), driving manual (principles)
-3. User present → confirm if next steps have changed; compact recovery without user → continue per headlights
+Recovery Chain is defined in CLAUDE.md and has two layers:
+
+**Must-read** (2–3 files, baseline for any continuation):
+1. CLAUDE.md (project scope, iron rules, operational rules)
+2. CURRENT_STATUS.md (tire tracks / car body / headlights / driving manual)
+
+**Task-conditional** (read only if the work matches):
+- If looking up a file: read FILE_INDEX.md
+- If investigating phase history: read WORKLOG.md
+- [Project-specific entries added over time]
+
+**Meta-rules**:
+- Recovery Chain is **self-contained**: only project-internal files (or stable sibling-project paths). No dependency on agent-side features (memory, chat history, external services) — those may not exist for the next agent.
+- Recovery Chain is **living**: update it at phase transitions (add entries for new work classes; remove retired ones).
+
+**Applying at session start**:
+1. Read must-read layer in order.
+2. Scan task-conditional; read only entries whose condition matches current work.
+3. If user present → confirm whether next steps have changed. Compact recovery without user → continue per headlights.
 
 ## During Work
 
@@ -88,6 +116,7 @@ Arranged in this order, each separated by `##`:
 - [ ] CLAUDE.md "one-line status (as of date)" refreshed?
 - [ ] All files created this session registered in FILE_INDEX?
 - [ ] Any important information only in context? → Write it down!
+- [ ] If a phase transition occurred: WORKLOG under ~1000 lines? (Over → trigger archival.)
 
 > The user may request `/doc-harness check` at any time for a comprehensive health audit and principle reflection. Recommended to run as a background agent to avoid interrupting current work.
 
@@ -108,3 +137,13 @@ Iron rules live in CLAUDE.md; they persist for the project's lifetime. New iron 
 Superseded documents: add at **first line**: `⚠️ SUPERSEDED BY [new document path]`. Then choose:
 - **Retained as reference** (most common): move to `## Superseded` category in FILE_INDEX. Note why retained.
 - **No longer useful**: move to `_archive/` and remove from FILE_INDEX.
+
+## Optional Long-Horizon Documents
+
+Two opt-in documents exist outside the core four. Create only when there is content to put in them; keep them in the task-conditional Recovery Chain layer, not must-read.
+
+- **`PARKING_LOT.md`** — Deferred items: things you want to do but can't now. Each entry: what, why deferred, preconditions for revival, re-check date. Never silently delete; annotate when revived or dropped. Use when CURRENT_STATUS would otherwise lose an item to work churn.
+
+- **`PHILOSOPHY.md`** — Principles from practice: generalizable lessons forged by this project's specific work. Each entry: principle statement, the practice that forged it, scope, first-recorded date. Can be promoted to portfolio-level elsewhere but remains in PHILOSOPHY.md as the birthplace record. Use when an insight likely applies beyond the immediate situation.
+
+See `DOC_HARNESS_SPEC.md` Chapter 13 for full formats, lifecycle, and rationale.

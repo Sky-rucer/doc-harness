@@ -1,17 +1,28 @@
 # Doc Harness — Entry Document
 
-**Last updated**: 2026-04-03
-**Current phase**: Independent project setup (⏳)
-**One-line status (as of 2026-04-03)**: v1.1 stable. Migrated from project_reorganization to standalone project. GitHub repo active. Installed at user + project level. Awaiting community feedback.
+**Last updated**: 2026-04-19
+**Current phase**: v1.2 development (⏳)
+**One-line status (as of 2026-04-19)**: v1.2 drafted (Recovery Chain two-layer + self-contained; WORKLOG 1000-line archival; optional PARKING_LOT/PHILOSOPHY; inbox/outbox explicitly NOT in scope). English and Chinese skill files synced. Self-application in progress. Not yet pushed.
 
 ---
 
 ## Recovery Chain
 
-1. Read this file → project scope, iron rules, technical info
-2. Read `CURRENT_STATUS.md` → what's done, what's active, next steps
-3. As needed: `FILE_INDEX.md` → find specific files
-4. As needed: `WORKLOG.md` → historical context
+### Must-read (baseline)
+
+1. This file (CLAUDE.md)
+2. `CURRENT_STATUS.md`
+
+### Task-conditional
+
+- If looking up a file: read `FILE_INDEX.md`
+- If investigating phase history: read `WORKLOG.md`
+- If editing the spec or operational rules: read `skill/spec.md` (authoritative)
+
+### Meta-rules
+
+- Self-contained: all entries point to project-internal files. No dependency on agent-side features.
+- Living: review at phase transitions.
 
 ## Project Overview
 
@@ -33,7 +44,7 @@ Doc Harness is a Claude Code skill that provides document-based project control 
 
 ## Key Technical Information
 
-**GitHub**: https://github.com/cilidinezy-commits/doc-harness (tag v1.1)
+**GitHub**: https://github.com/cilidinezy-commits/doc-harness (latest tag: v1.1; v1.2 pending push)
 **License**: MIT
 
 **File structure**:
@@ -56,8 +67,8 @@ doc-harness/
 | SKILL.md | Entry point + router |
 | init.md | `/doc-harness init` — create 5 docs |
 | check.md | `/doc-harness check` — audit + reflect |
-| operational_rules.md | Rules embedded in each project's CLAUDE.md (~110 lines) |
-| spec.md | Complete specification (~830 lines, 12 chapters + 4 appendices) |
+| operational_rules.md | Rules embedded in each project's CLAUDE.md (~150 lines as of v1.2) |
+| spec.md | Complete specification (~990 lines as of v1.2, 13 chapters + 5 appendices) |
 
 ## Doc Harness — Operational Rules
 
