@@ -12,6 +12,14 @@ Works for any project: writing a thesis, building a SaaS feature, analyzing data
 
 ---
 
+## 30-Second Overview
+
+Once installed, the agent maintains 5 status documents for your project: entry point (CLAUDE.md), current status (CURRENT_STATUS.md), file index (FILE_INDEX.md), history log (WORKLOG.md), and specification (DOC_HARNESS_SPEC.md). Context reset, new agent, coming back after a weekend — reading these 5 files is enough to pick up seamlessly.
+
+**Zero dependencies** (plain Markdown, no MCP / database / external service) · **Bilingual** (English / 中文) · **MIT**.
+
+---
+
 ## What Problem Does This Solve?
 
 When you work with AI agents on a project over days or weeks:
@@ -73,7 +81,7 @@ The first thing any agent reads. Contains your project overview, non-negotiable 
 
 *Answers: "What just happened? What's happening now? What's next?"*
 
-The most dynamic document. Structured as a **moving car** with four sections:
+A project in motion is like a **moving car**: there's the road behind (history), the current position (now), the direction ahead (not yet certain), and the rules you follow while driving. All of these need to be tracked and recorded. CURRENT_STATUS.md is organized around that metaphor:
 
 | Section | Plain label | What's in it |
 |---------|------------|-------------|
@@ -130,16 +138,83 @@ Each fact lives in exactly **one** document (Single Source of Truth), so there a
 
 ## Getting Started
 
-### Install
+### Install (first time)
 
-```bash
-git clone https://github.com/cilidinezy-commits/doc-harness.git
-cp -r doc-harness/skill ~/.claude/skills/doc-harness
+This repo is a Claude Code plugin marketplace. There are two ways to install; pick whichever fits your setup.
+
+#### Option A — Native plugin marketplace (recommended, for Claude Code with `/plugin` support)
+
+Inside Claude Code:
+
+```
+/plugin marketplace add cilidinezy-commits/doc-harness
+/plugin install doc-harness@doc-harness
 ```
 
-Verify it works — in Claude Code, type `/doc-harness` and you should see the help message.
+Replace the second command with `/plugin install doc-harness-zh@doc-harness` if you want the Chinese version — they are separate plugins and only one should be installed at a time (they expose the same `/doc-harness` command).
 
-> **Windows note**: Use `cp -r doc-harness/skill $HOME/.claude/skills/doc-harness` in Git Bash, or manually copy the `skill` folder to `%USERPROFILE%\.claude\skills\doc-harness`.
+Verify: type `/doc-harness` — you should see the help output describing `init` and `check`.
+
+#### Option B — Manual copy (works everywhere)
+
+The skill is a folder of Markdown files. "Installing" manually means copying that folder into Claude Code's skills directory.
+
+**Step 1 — clone the repo:**
+```bash
+git clone https://github.com/cilidinezy-commits/doc-harness.git
+cd doc-harness
+```
+
+**Step 2 — pick a language.** `skill/` is English; `skill-zh/` is Chinese. They install to the same path and cannot coexist — pick the language that matches the documentation your projects will use.
+
+**Step 3 — copy into Claude Code's skills directory.**
+
+Unix / macOS / Git Bash on Windows:
+```bash
+cp -r skill ~/.claude/skills/doc-harness        # English
+# or:
+cp -r skill-zh ~/.claude/skills/doc-harness     # Chinese
+```
+
+Windows PowerShell / cmd:
+```powershell
+xcopy skill %USERPROFILE%\.claude\skills\doc-harness\ /E /I
+```
+
+**Step 4 — verify.** Open Claude Code in any directory and type `/doc-harness`. You should see the help output describing `init` and `check`. If the command isn't recognized, the files weren't copied to the right path — check `~/.claude/skills/doc-harness/SKILL.md` exists.
+
+**Check the installed version**: `head -3 ~/.claude/skills/doc-harness/spec.md` — should print the `**Version**` line (e.g., `v1.4`).
+
+### Project-level install (optional)
+
+If you want a specific project to pin a particular Doc Harness version independent of your user-level install, put the skill at `<project_root>/.claude/skills/doc-harness/` instead. Claude Code prefers project-level skills over user-level when both exist. `/doc-harness check` resolves install paths in this order: project → `~/.claude` → XDG → Windows default.
+
+### Upgrade an existing install
+
+**If you used Option A (plugin marketplace)**: `/plugin marketplace update doc-harness` — Claude Code pulls the latest and updates the installed plugin in place.
+
+**If you used Option B (manual copy)**:
+1. **Pull the latest**: `cd doc-harness && git pull`
+2. **Re-copy the skill folder** — the same command as Step 3 of first-install. It overwrites in place; no local state lives in the installed skill directory, so nothing is lost.
+3. **Verify the new version**: `head -3 ~/.claude/skills/doc-harness/spec.md`.
+
+4. **Then upgrade your existing projects' CLAUDE.md** (important, applies to both Option A and Option B): the operational rules embedded inside each project's `CLAUDE.md` are a **snapshot** taken at `init` time — they do NOT update automatically when you upgrade the skill. To bring a project up to date, replace the bytes between `<!-- doc-harness-ops-start -->` and `<!-- doc-harness-ops-end -->` in that project's `CLAUDE.md` with the new contents of `operational_rules.md`. Anything outside those sentinels (custom iron rules, project-specific sections) is preserved. Run `/doc-harness check` in the project — §1.10 tells you if the embedded version is stale.
+5. **(If the project has `DOC_HARNESS_SPEC.md`)** overwrite with the new `spec.md`.
+6. **v1.2 → v1.3 / v1.4 specifically**: if the project has cross-project dependencies, follow the retrofit in `spec.md` §14.7 to enable `inbox/outbox`. Skip if the project is standalone.
+
+### Uninstall
+
+**If you used Option A (plugin marketplace)**: `/plugin uninstall doc-harness` (or `/plugin uninstall doc-harness-zh`).
+
+**If you used Option B (manual copy)** — remove the skill globally:
+```bash
+rm -rf ~/.claude/skills/doc-harness
+```
+or Windows: `rmdir /S %USERPROFILE%\.claude\skills\doc-harness`.
+
+**Stop using Doc Harness on one project** (keeps it available elsewhere): delete or move aside that project's 4 core files (`CLAUDE.md`, `CURRENT_STATUS.md`, `FILE_INDEX.md`, `WORKLOG.md`) — e.g., `mv *.md _archive/`. The skill itself is inert on a project that has no Doc Harness files.
+
+**Downgrade to an earlier version**: `cd doc-harness && git checkout v1.3` (or whatever tag), then re-copy. Existing projects' embedded rules stay at whatever version they were when `init`'d.
 
 ### Use It
 
@@ -298,8 +373,10 @@ This single principle prevents more information loss than any other feature.
 
 ## Languages
 
-- `skill/` — English (default)
+- `skill/` — English
 - `skill-zh/` — 中文版
+
+Install **one**: the two install to the same path and cannot coexist. Pick the language that matches the documentation your projects will use — install/upgrade/uninstall procedures are in the Getting Started section above.
 
 ## Requirements
 
@@ -317,6 +394,12 @@ Yes. Use sub-headings in the car body to track parallel work threads. Phase tran
 **Q: Does this work with AI tools other than Claude Code?**
 The `/doc-harness` commands are Claude Code specific. But the documentation system itself is universal — any AI that reads markdown can follow the operational rules in CLAUDE.md.
 
+**Q: How is this different from the CLAUDE.md / AGENTS.md conventions I'm already using?**
+A plain CLAUDE.md is a single file; Doc Harness is a collaboration system — CLAUDE.md (stable entry) + CURRENT_STATUS (dynamic state) + FILE_INDEX (findability) + WORKLOG (history) + phase-transition protocol + automated audits. If your CLAUDE.md keeps growing past a few hundred lines, or you find agents re-reading it repeatedly to figure out "what are we actually working on right now," that's the signal to upgrade. Doc Harness separates the "unchanging" from the "changes every session."
+
+**Q: Is there any lock-in? If it doesn't work out, can I fully back out?**
+Yes, completely. Everything is plain Markdown — delete the 4 core documents and you're out; your working files are untouched. No database, no binary format, no proprietary schema. Even if Claude Code stopped updating tomorrow, your Doc Harness files remain ordinary Markdown that any human or tool can read.
+
 **Q: How does this relate to Claude Code's MEMORY.md?**
 They're complementary. MEMORY.md is Claude's personal memory across sessions (maintained automatically). Doc Harness is project-level documentation (maintained explicitly). Doc Harness is designed to work without MEMORY.md — any agent, with or without personal memory, can recover the project state from the files alone.
 
@@ -332,17 +415,61 @@ Yes. Add sections, define your own categories, adjust principles. Core requireme
 **Q: Sub-projects?**
 Each gets its own Doc Harness. Parent's FILE_INDEX links to sub-project entries.
 
+**Q: My project has 1000+ files. Do I really have to register each one?**
+No — that's what FILE_INDEX sub-indexes and bulk registration are for. See spec §4.3 (a sub-directory with >20 files should have its own sub-FILE_INDEX.md) and §4.4 (bulk registration lets you record a folder + count + naming rule in one entry instead of listing every file). `/doc-harness check` §1.4 recurses into sub-indexes automatically.
+
+**Q: How do I disable Doc Harness on one project?**
+Delete the 4 core files (CLAUDE.md, CURRENT_STATUS.md, FILE_INDEX.md, WORKLOG.md) or move them into `_archive/`. The skill itself (installed at `~/.claude/skills/doc-harness/`) is not per-project — it becomes inert for a project that has no Doc Harness files.
+
+**Q: Cross-project messaging — what does an inbox message actually look like?**
+A complete example (filename `2026-04-19-from-whoami-api-deadline.md` in the recipient's `inbox/`):
+
+```markdown
+---
+from: whoami
+to: lit-system-api
+date: 2026-04-19
+subject: API deadline moved forward to May 15
+status: unread
+in-reply-to: null
+priority: high
+---
+
+Heads up — the academic job site launches 2026-05-20 and needs your
+citation-marker API working by 2026-05-15. Contract unchanged from
+the 2026-04-10 spec; just the deadline shifted.
+
+Please confirm receipt by sending a reply message.
+```
+
+The recipient agent reads this, flips `status: unread` → `read`, performs whatever work is needed (here: acknowledgment + plan), then flips to `actioned`. Full protocol: spec Chapter 14. Enable on init (y/n prompt in Step 1) or retrofit existing projects per spec §14.7.
+
 **Q: What's new in v1.2?**
 - **Recovery Chain is now two-layer**: a minimal must-read baseline (2–3 files) plus a task-conditional list for work-specific lookups. Self-contained — no dependency on agent-side memory or external services.
 - **WORKLOG archival**: when `WORKLOG.md` passes ~1000 lines, older phases move to `WORKLOG_ARCHIVE_<YYYY-QN>.md` (quarterly). Keeps the active WORKLOG readable without losing history.
 - **Two optional documents** for long-horizon content: `PARKING_LOT.md` (deferred items with revival preconditions) and `PHILOSOPHY.md` (principles forged by project practice). Both opt-in — create only when there's content to put there.
 
 **Q: What's new in v1.3?**
-- **Inter-project inbox/outbox** is now an optional Doc Harness feature (Chapter 14 of the spec). When a project coordinates with others, it can adopt `inbox/` and `outbox/` directories with a YAML-frontmatter Markdown message protocol. The complete specification is self-contained inside each project's `DOC_HARNESS_SPEC.md` — no external spec needed.
+- **Inter-project inbox/outbox** is now an optional Doc Harness feature (Chapter 14 of the spec). When a project coordinates with others, it can adopt `inbox/` and `outbox/` directories with a YAML-frontmatter Markdown message protocol. The complete specification is self-contained inside each project's `DOC_HARNESS_SPEC.md` — no external spec needed. *(This reverses v1.2's position that inbox/outbox was out of scope; design rationale in `spec.md` Appendix E.)*
 - `/doc-harness init` now asks whether to enable the inbox/outbox protocol and sets up the folders, iron rule block, Recovery Chain entry, and FILE_INDEX category automatically (Step 3.6).
 - `/doc-harness check` now audits inbox unread-message count (§1.7) and checks Recovery Chain health for the two-layer structure (§2.5).
-- "Portfolio" framing removed from the spec. Projects in a group are self-contained peers; a parent navigation file is just a lightweight optional pattern, not a Doc Harness concept.
+- **Hierarchical "portfolio" framing removed** from the spec. Projects in a group are self-contained peers; a parent navigation file is a lightweight optional pattern, not a Doc Harness concept. (The neutral term "project group" / §10.2 is retained for this flat-peer arrangement.)
 - **Context-aware update cadence**: operational rules now instruct agents whose runtime exposes context-window usage to treat low remaining context (~<20%) as an immediate trigger for CURRENT_STATUS update and possible phase transition. Compression is involuntary session end — don't wait for a "meaningful step" that may never land.
+
+**Q: What's new in v1.4?**
+A comprehensive hardening pass driven by six review cycles. Key additions:
+- **Mid-transition detection (§6.3.1)**: a three-way coherence check (CLAUDE.md phase / WORKLOG TOC / CURRENT_STATUS tire tracks) that detects an interrupted phase transition and repairs it deterministically. Wired into `/doc-harness check` §1.9.
+- **Malformed inbox messages**: §14.8 specifies quarantine (`inbox/_malformed/`), classification, and the strict-vs-lenient policy for each malformation type.
+- **Archival trigger for stale messages**: §14.4 rule 3 is now actionable — `/doc-harness check` §1.7(b) flags archival when ≥5 `actioned` messages are older than 30 days.
+- **Sub-index recursion with prune**: `/doc-harness check` §1.4 now correctly handles nested `FILE_INDEX.md` files without false-positive ghost entries at parent indexes.
+- **Version-drift detection**: `<!-- doc-harness-ops-start/end -->` sentinels delimit the embedded operational-rules region; check §1.10 reads the version tag and flags stale embeddings after a skill upgrade. Re-embed safely replaces only the delimited region, preserving any custom iron rules below it.
+- **Pause/resume decision tree (§6.4)**: three paths — orderly, emergency (mid-transition), auto-resume with a ≤7d / 8–30d / >30d boundary. Auto-resume runs §6.3.1 first.
+- **Inbox filename disambiguator**: §14.3 adds an `HHMMSS` suffix for same-day collisions and an `-<N>` counter for sub-second collisions.
+- **Pre-send verification**: §14.3.1 requires senders to confirm the recipient has adopted the inbox/outbox protocol before writing; failed deliveries are recorded in the sender's CURRENT_STATUS.
+- **Driving-manual review ritual (§6.2.2)**: five questions to apply to each phase-level principle at transition — promote / keep / reword / remove.
+- **Quantified context-awareness threshold**: §11.2 bullet 4 now defines "substantial unsaved work" concretely.
+- **Language-independent check.md**: anchors match either English or Chinese headings produced by `init` templates.
+- **Skill-creator structural pass**: pushier SKILL.md description for better triggering; TOC at top of spec.md; explicit `Edit` in allowed-tools; the car metaphor is now explained narratively in §3.1.
 
 ## License
 
@@ -350,4 +477,4 @@ Each gets its own Doc Harness. Parent's FILE_INDEX links to sub-project entries.
 
 ## Credits
 
-Designed and built through iterative human-AI collaboration, with blind testing by independent agents, architectural review, stress-test simulation, and real-world project validation.
+Designed and built through iterative human-AI collaboration, with multiple rounds of independent review and sustained use on real projects.

@@ -1,8 +1,8 @@
 # Doc Harness — Entry Document
 
 **Last updated**: 2026-04-19
-**Current phase**: v1.3 development — pre-commit (⏳)
-**One-line status (as of 2026-04-19)**: v1.3 skill files complete. Inbox/outbox is now opt-in Doc Harness feature (Chapter 14); portfolio language purged; bilingual sync done; self-application done. Pending: commit + tag + deploy sync.
+**Current phase**: Phase 4 — Maintenance & field-feedback watch (⏳ idle)
+**One-line status (as of 2026-04-19)**: v1.4 shipped + published. Plugin marketplace live (`/plugin marketplace add cilidinezy-commits/doc-harness`), smoke-tested, submitted to awesome-claude-code + two catalogs. Phase 3 (v1.2→v1.3→v1.4 + publishing) closed cleanly. Project now idle; reactivate on v1.5 triggers (see CURRENT_STATUS driving manual).
 
 ---
 
@@ -54,7 +54,7 @@ Doc Harness is a Claude Code skill that provides document-based project control 
 
 ## Key Technical Information
 
-**GitHub**: https://github.com/cilidinezy-commits/doc-harness (latest tag: v1.1; v1.2 pending push)
+**GitHub**: https://github.com/cilidinezy-commits/doc-harness (latest tag: v1.4)
 **License**: MIT
 
 **File structure**:
@@ -77,8 +77,8 @@ doc-harness/
 | SKILL.md | Entry point + router |
 | init.md | `/doc-harness init` — create 5 docs |
 | check.md | `/doc-harness check` — audit + reflect |
-| operational_rules.md | Rules embedded in each project's CLAUDE.md (~150 lines as of v1.2) |
-| spec.md | Complete specification (~990 lines as of v1.2, 13 chapters + 5 appendices) |
+| operational_rules.md | Rules embedded in each project's CLAUDE.md (180 lines as of v1.4; delimited by `<!-- doc-harness-ops-start/end -->` sentinels) |
+| spec.md | Complete specification (1320 lines as of v1.4, 14 chapters + 5 appendices, TOC at top) |
 
 ## Doc Harness — Operational Rules
 

@@ -1,6 +1,6 @@
 # FILE_INDEX — Doc Harness
 
-**Last updated**: 2026-04-19 (v1.3)
+**Last updated**: 2026-04-19 (v1.4)
 
 ---
 
@@ -29,6 +29,9 @@
 - `README.md` — English project description (installation, usage, FAQ)
 - `README_zh.md` — Chinese project description
 - `LICENSE` — MIT license
+
+## Plugin Marketplace Metadata
+- `.claude-plugin/marketplace.json` — Marketplace definition exposing two plugins (`doc-harness` / `doc-harness-zh`) so users can install via `/plugin marketplace add cilidinezy-commits/doc-harness` + `/plugin install <name>@doc-harness`
 
 ## Inter-Project Communication
 

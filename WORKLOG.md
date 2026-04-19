@@ -3,7 +3,8 @@
 ## Table of Contents
 | Phase | Period | Anchor |
 |-------|--------|--------|
-| Phase 3: v1.2 development | 2026-04-19 | [→](#phase-3-v12-development-2026-04-19) |
+| Phase 4: Maintenance & field-feedback watch | 2026-04-19~ | (in CURRENT_STATUS; no WORKLOG entry yet) |
+| Phase 3: v1.2 → v1.3 → v1.4 + publishing | 2026-04-19 | [→](#phase-3-v12-development-2026-04-19) |
 | Phase 2: Independent project | 2026-04-03 | [→](#phase-2-independent-project-setup-2026-04-03) |
 | Phase 1: Design → publish (in project_reorganization) | 2026-04-01 ~ 04-03 | [→](#phase-1-design-development-and-publishing-2026-04-01--2026-04-03) |
 
@@ -106,11 +107,111 @@ Chinese skill files (mirrored per iron rule 1):
 - `FILE_INDEX.md`: Inter-Project Communication category updated to reference Chapter 14.
 - `README.md` / `README_zh.md`: v1.2 FAQ bullet corrected (removed erroneous exclusion of inbox/outbox); v1.3 FAQ entry added.
 
+#### v1.4 comprehensive release: six-review audit, 30 issues closed (2026-04-19)
+
+After v1.3 shipped, user requested self-review (3 issues). User pivoted from the planned v1.3.1 patch to a comprehensive v1.4 intended to fix **all found and potential issues**. Total process: six review cycles.
+
+**Review cycle summary**:
+1. **Self-review**: 3 issues (§14.5 filename typo, WhoAMI inbox still unread, 项目群 mistranslation).
+2. **Agents A + B** (first third-party pair): Agent A (internal consistency) found 3 critical + design gaps; Agent B (user-facing doc review) surfaced retrofit-path discoverability, missing v1.2→v1.3 reversal note, worked-example gap.
+3. **Agents C + D** (scenario-driven pair): Agent C (onboarding) surfaced upgrade path, language install collision, init mid-project branch, zero-args dispatcher, FAQ gaps; Agent D (lived-project) surfaced 10+ operational gaps (mid-transition, WORKLOG quarter boundary, malformed handling, collision resolution, archival trigger, version drift, sub-index recursion, principle ambiguity, check.md language-dependency).
+4. **Agents E + F** (final v1.4 design-integrity pair): Agent E identified 6 post-draft issues (bash prune, install path resolution, §6.4 ordering, §6.3.1 ambiguity, ops-rules archival gap, §14.8 `to:`); Agent F identified 10 scenario gaps (⏸️ row in table, sub-second collision, pre-send verification, `_malformed/` exclusion, unchanged/rewrite conflict, re-embed sentinels, mid-project override, cross-quarter scar, and more).
+5. **skill-creator structural review**: pushier SKILL.md description, spec TOC, `Edit` in allowed-tools, car-metaphor narrative explanation.
+6. User prompt surfaces a 6th mid-v1.4 addition: expand §3.1 to narratively explain the car metaphor (tire tracks / car body / headlights / driving manual as four questions an agent asks on arrival).
+
+**30 distinct issues** closed in v1.4 — see spec.md Version History v1.4 row for the complete list with labels B1–B8 (content/quick fixes), P1–P12 (design additions), plus the structural and integrity items.
+
+**Major design artifacts introduced in v1.4**:
+- §6.2.1 stepwise failure table (Step 1–5 signatures + per-step repair)
+- §6.2.2 driving-manual review ritual as 5-question checklist with "semantic intent unchanged" criterion
+- §6.3.1 mid-transition three-way coherence table (6 rows + ⏸️ row + footnote + zero-progress note)
+- §6.4 three-path pause/resume (orderly / emergency / auto-resume) with ≤7d / 8–30d / >30d decision tree and §6.3.1 as mandatory repair gate
+- §14.3 HHMMSS disambiguator + sub-second `-<N>` counter
+- §14.3.1 pre-send verification (sender must confirm recipient adoption via 3 checks before writing)
+- §14.8 malformed-message handling with `inbox/_malformed/` quarantine and 8-row classification table
+- `<!-- doc-harness-ops-start -->` / `<!-- doc-harness-ops-end -->` sentinels delimiting the embedded region in CLAUDE.md so re-embeds don't clobber custom content
+- `<!-- doc-harness-ops-version: 1.4 -->` version tag read by `/doc-harness check` §1.10
+- check.md §1.4 recursive sub-index audit **with prune at sub-index boundaries** (Agent E's key finding)
+- check.md §1.7 four sub-checks (unread + archival-due + malformed count + recent-outbox logged)
+- check.md §1.8 language-independent car-body anchor (matches English OR Chinese)
+- check.md §1.9 mid-transition coherence (mirrors spec §6.3.1)
+- check.md §1.10 ops-rules version drift with full 4-path install-path resolution (project-local / ~/.claude / XDG / Windows)
+- §5.5 quarter-boundary rule (archive by end date, don't split), archive↔WORKLOG backlinks, cross-quarter scar, atomic-commit git convention
+- §11.2 bullet 4 quantified "substantial" threshold (a: ≥3 `####` steps; b: ≥50 lines added; c: car body ≥100 lines)
+- §3.1 car metaphor expanded into narrative form (tire tracks / car body / headlights / driving manual → four questions an arriving agent asks)
+- operational_rules.md archival section catches up to spec §5.5 (quarter-boundary, backlinks, git convention)
+- SKILL.md description rewrite for triggering (implicit user phrases alongside explicit slash commands)
+- spec.md gains TOC at top for 1320-line navigation
+
+**Bilingual sync** (iron rule 1): all changes mirrored into `skill-zh/`. Exact line counts: spec 1320 (en) / 1315 (zh); operational_rules 180 / 180; check 278 / 278; init 221 / 218; SKILL 58 / 58.
+
+**Self-application**: CLAUDE.md phase → v1.4; Recovery Chain unchanged (already two-layer); operational rules row in Key Technical Info refreshed; FILE_INDEX dates bumped. `PARKING_LOT.md` deleted (nothing parked — v1.4 closed every item). Inbox: both messages marked `actioned`.
+
+**Skill-creator consultation**: `skill-creator:skill-creator` loaded and applied as the final structural review gate. Its guidance drove the description rewrite, TOC, and tool-list update. All recommendations applied.
+
+**Pending**: commit + tag v1.4 + push + deploy to both installed copies.
+
+#### v1.4 shipped and published (2026-04-19)
+
+v1.4 committed (`e4a7938`) and tagged; deploy sync to both installed copies done. Follow-up self-application commit (`b46eeae`) flipped status docs from "pre-commit" to "shipped."
+
+**Install/upgrade/uninstall documentation rewrite**: user flagged that the lifecycle was underdocumented — a reader who installed an old version had no clear procedure for: where the skill lives, how to check installed version, how to upgrade while preserving custom iron rules, how to uninstall globally vs per-project, how to downgrade. Getting Started section in both READMEs rewritten to cover all of this end-to-end. Previous standalone "Upgrading" section dissolved into one cohesive lifecycle block. Commit `011a983`.
+
+**Published as Claude Code plugin marketplace**: added `.claude-plugin/marketplace.json` exposing two plugins (`doc-harness` English + `doc-harness-zh` Chinese) from the existing `./skill` and `./skill-zh` directories. Schema verified against `anthropics/skills` reference implementation — no per-plugin `plugin.json` needed; plugin metadata lives in `marketplace.json` `plugins[]` array and `skills[]` points to existing skill directories via relative paths. Both manual install (`git clone + cp -r`) and plugin-marketplace install (`/plugin marketplace add cilidinezy-commits/doc-harness` + `/plugin install doc-harness@doc-harness`) now work; users can pick either. READMEs updated to present both options. Commit `4e3d33f`.
+
+**Smoke test passed**: user ran `/plugin marketplace add cilidinezy-commits/doc-harness` + `/plugin install doc-harness@doc-harness` + `/doc-harness` in Claude Code — all three succeeded. The v1.4 SKILL.md dispatcher logic correctly detected the all-files-present case in the WhoAMI project and suggested `/doc-harness check` as the next step. Real-world validation of §1.4, §1.8 language-independent anchors, and the partial-state branch in SKILL.md.
+
+**GitHub repo polish**: description rewritten to be more descriptive and triggering-oriented (mentions inbox/outbox, phase-transition detection); 11 topics applied (claude-code, claude-skill, claude-code-skill, agent-skills, ai-agent, ai-human-collaboration, documentation, productivity, project-management, context-management, anthropic).
+
+**Community catalog submissions**: user submitted to awesome-claude-code (Target 1 — 39.5k stars, the dominant list) and claudemarketplaces.com / claudepluginhub.com via their respective web forms. `hesreallyhim/awesome-claude-code` explicitly forbids CLI submissions (auto-closed as spam), so these had to go through browser UI.
+
+**Skill-creator structural consultation**: applied during v1.4 development. Drove the SKILL.md description rewrite (pushier, trigger-accurate), TOC at top of spec.md, addition of `Edit` to allowed-tools, and the narrative explanation of the car metaphor in §3.1.
+
+### Phase 3 summary (recap)
+
+Phase 3 spanned v1.2 → v1.3 → v1.4 + publishing. What started as a quick v1.2 patch (Recovery Chain two-layer, WORKLOG archival, optional docs) expanded into a comprehensive hardening release after six independent review cycles surfaced 30 distinct issues. The final release is production-ready: a document-based project control skill with bilingual support, a full plugin-marketplace install path, tested on real projects, and open to community discovery via awesome-lists and plugin catalogs.
+
+The phase closed cleanly — `PARKING_LOT.md` that had been created mid-work was deleted because v1.4 closed every parked item. Two inbox messages (SMSS mandate, WhoAMI proposals) that motivated the work were marked `actioned`. doc-harness now enters a maintenance phase, awaiting real-world field feedback before a potential v1.5.
+
+---
+
 #### v1.3 addition: context-aware update cadence (2026-04-19)
 
 User prompted late in v1.3: should Doc Harness guide agents to monitor remaining context window and pre-emptively flush to files before compression? Accepted — fits naturally with "write it down or lose it." Added a 4th bullet to `spec.md §11.2` ("During Work") and the corresponding section of `operational_rules.md`, in both languages. Rule is platform-conditional: only applies if the runtime exposes context-usage metrics. Threshold suggested at ~<20% remaining. Action: update CURRENT_STATUS before the next tool call; if the car body holds substantial unsaved work, trigger a phase transition immediately rather than wait for the next "meaningful step" that may never land.
 
 README v1.3 FAQ entry updated with this bullet. DOC_HARNESS_SPEC.md re-synced (1140 lines).
+
+#### v1.3.1 patch: four-reviewer audit response (2026-04-19)
+
+After v1.3 shipped, user requested self-review. Initial pass found 3 issues. User then asked for two third-party reviews (code-reviewer + general-purpose) in parallel, then two more scenario-driven reviews (onboarding + lived-project) in parallel. **Total of 16 issues surfaced across four independent reviewers plus the self-review.**
+
+**v1.3.1 addresses 8 of the 16** — pure documentation / sync / consistency fixes:
+
+- **B1** (iron rule 1 violation): `skill-zh/operational_rules.md` gained the inbox/outbox section that was absent — English had lines 152–170, Chinese ended at 151.
+- **B2** (spec internal contradiction): `§14.5` car body template previously showed `outbox/YYYY-MM-DD-to-<target>-<topic>.md` but `§14.3` defines filenames as always `from-<source>`. Corrected in both languages and DOC_HARNESS_SPEC.md. Added a clarifying parenthetical.
+- **B3** (upgrade path undocumented): README gained a 4-step **Upgrading from an earlier version** section. Key point documented: embedded `operational_rules` in existing CLAUDE.md files are snapshots taken at `init` time and do NOT auto-update when the skill is upgraded — user must replace the section manually.
+- **B4** (default-language contradiction): English README said `skill/` was default; Chinese README said `skill-zh/` was default. Both install to the same path (`~/.claude/skills/doc-harness/`) and cannot coexist. Text updated in both to "install one; pick the language that matches your project documentation language."
+- **B5** (v1.2→v1.3 reversal not noted): Readers of v1.2 saw "Doc Harness deliberately does NOT include inbox/outbox." v1.3 FAQ now explicitly notes this decision was reversed and points to Appendix E for rationale.
+- **B6** (Chinese mistranslation): `README_zh` said `规范中移除了"项目群"框架` — but 项目群 is still the spec's preferred term for flat peer groups (§10.2, retained). Only the hierarchical *portfolio* concept was removed. Fixed to `规范中移除了层级化的"portfolio（项目组合）"框架`.
+- **B7** (mid-project adoption path): `init.md` Step 2 previously said "if CLAUDE.md exists, warn." Now branches into 4 cases: (a) clean directory → clean init; (b) Doc Harness present → don't overwrite, suggest check; (c) non-empty directory without Doc Harness → mid-project adoption per spec §10.3; (d) partial state → complete the missing files in mid-project mode.
+- **B8** (no-args dispatcher partial state): SKILL.md `/doc-harness` no-args now handles three cases — all core files present (→ check), none present (→ init), partial state (→ init in mid-project mode; do NOT suggest check on a broken installation).
+
+**8 design gaps parked** in new `PARKING_LOT.md` at project root (first use of the v1.2 optional document in this project):
+
+- P1 Mid-phase-transition interruption detection
+- P2 Inbox filename collision / disambiguator
+- P3 Malformed inbox message handling
+- P4 30-day actioned-message archival trigger
+- P5 WORKLOG archival: phases spanning quarter boundaries
+- P6 `check.md` language-dependency (headings hardcoded per language)
+- P7 `check.md` sub-index recursion not implemented
+- P8 `check.md` has no spec-version drift detection
+
+Plus 4 polish items (P13–P16). Each entry names revival preconditions and re-check dates.
+
+**Spec**: `spec.md` Version History gains v1.3.1 row in both languages. `DOC_HARNESS_SPEC.md` re-synced from `skill/spec.md`.
+
+**Inbox housekeeping**: both inbox messages (SMSS 2026-04-18, WhoAMI 2026-04-19) moved from `unread/read` → `actioned` since all their content has been implemented across v1.2 + v1.3 + v1.3.1.
 
 ---
 
