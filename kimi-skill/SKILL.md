@@ -1,6 +1,23 @@
 ---
 name: doc-harness
-description: "Document-based project control that lets any AI agent or human resume work from files alone — no external memory needed. Use this skill whenever the user wants to structure a long-running project, track progress across sessions, recover state after context loss, coordinate multiple agents on the same project, audit project documentation health, or stop forgetting what was done last session. Triggers include: 'help me set up this project', 'I keep losing track', 'my agent forgets between sessions', 'organize my project docs', 'audit this project', 'check the documentation', 'what did we do last time', 'update the status docs', 'sync the project state', 'save everything before context compresses', 'flush context', 'prepare for compact', 'register this new file', 'init doc-harness', 'recall', 'remember', 'find in docs', 'search project docs', 'where did we discuss', 'why did we decide', 'what is the current plan', 'summarize what we know about'; multi-week projects (theses, research, analyses, software modules) that span many sessions; cross-project coordination (inbox/outbox for file-based messages between projects); requests to create CLAUDE.md, CURRENT_STATUS.md, FILE_INDEX.md, WORKLOG.md, or DOC_HARNESS_SPEC.md."
+description: >-
+  Document-based project control that lets any AI agent or human resume work
+  from files alone — no external memory needed. Use this skill whenever the
+  user wants to structure a long-running project, track progress across
+  sessions, recover state after context loss, coordinate multiple agents on the
+  same project, audit project documentation health, or stop forgetting what was
+  done last session. Triggers include: 'help me set up this project', 'I keep
+  losing track', 'my agent forgets between sessions', 'organize my project
+  docs', 'audit this project', 'check the documentation', 'what did we do last
+  time', 'update the status docs', 'sync the project state', 'save everything
+  before context compresses', 'flush context', 'prepare for compact', 'register
+  this new file', 'init doc-harness', 'recall', 'remember', 'find in docs',
+  'search project docs', 'where did we discuss', 'why did we decide', 'what is
+  the current plan', 'summarize what we know about'; multi-week projects
+  (theses, research, analyses, software modules) that span many sessions;
+  cross-project coordination (inbox/outbox for file-based messages between
+  projects); requests to create CLAUDE.md, CURRENT_STATUS.md, FILE_INDEX.md,
+  WORKLOG.md, or DOC_HARNESS_SPEC.md.
 ---
 
 # Doc Harness — Document-Based Project Control
